@@ -168,6 +168,9 @@ int db_open_int_telemetry_udp_socket() {
  * @param data_length Length of the data in the buffer
  */
 void db_send_to_all_udp_clients(const uint8_t *data, uint data_length) {
+    if (udp_conn_list == NULL || udp_conn_list->udp_socket < 0) {
+        return;
+    }
     for (int i = 0; i < udp_conn_list->size; i++) {  // send to all UDP clients
         int sent = sendto(udp_conn_list->udp_socket, data, data_length, 0,
                           (struct sockaddr *) &udp_conn_list->db_udp_clients[i].udp_client,
@@ -356,7 +359,9 @@ udp_conn_list_t *udp_client_list_create() {
     if (n_udp_conn_list == NULL) { // Check if the allocation failed
         return NULL; // Return NULL to indicate an error
     }
+    memset(n_udp_conn_list, 0, sizeof(udp_conn_list_t));
     n_udp_conn_list->size = 0; // Initialize the size to 0
+    n_udp_conn_list->udp_socket = -1; // Mark the socket invalid until the control task opens it
     return n_udp_conn_list; // Return the pointer to the list
 }
 
