@@ -23,7 +23,8 @@ Build and flash the firmware to a connected ESP32 using `idf.py build flash`. Ru
 To just build run `idf.py build`. To just flash run `idf.py flash`
 
 # Create a release
-The version number and build index must be updated inside `main/parameters.h` and `CMakeLists.txt`
+The version number and build index must be updated inside `main/parameters.h` and `CMakeLists.txt`.
+The `$release_foldername` and `$release_name_zip` of `create_release_zip.ps1` need to be adjusted.
 Run `create_release_zip.ps1`. It uses pre-defined configurations from the `config-defaults` folder. 
 
 # How to Debug
