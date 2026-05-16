@@ -19,3 +19,4 @@ dependencies.lock
 frontend/node_modules
 *.old
 /node_modules
+/build-codex/
