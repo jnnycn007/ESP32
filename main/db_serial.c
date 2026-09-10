@@ -273,6 +273,12 @@ void db_parse_mavlink_from_radio(int *tcp_clients, udp_conn_list_t *udp_conns, u
         fmav_result_t result = {0};
         if (fmav_parse_and_check_to_frame_buf(&result, parser->frame_buf, &parser->status, buffer[i])) {
             if (db_mavlink_parse_result_is_forwardable(result.res)) {
+                // Another AIR's flow-control reports must not throttle the local FC.
+                const bool peer_air_to_fc = DB_PARAM_RADIO_MODE == DB_WIFI_MODE_ESPNOW_AIR &&
+                                            !allow_local_endpoint_handling;
+                if (db_mavlink_filter_peer_radio_status(result.msgid, peer_air_to_fc)) {
+                    continue;
+                }
                 // Preserve custom-dialect frames while rejecting known-invalid MAVLink frames.
                 write_to_serial(parser->frame_buf, result.frame_len);
             }
